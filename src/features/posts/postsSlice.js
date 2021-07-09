@@ -1,5 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 
+// Dummy data inserted
 const initialState = [
   {id: '1', title: 'First Post!', content: 'Hello!'},
   {id: '2', title: 'Second Post', content: 'More text'},
@@ -15,6 +16,7 @@ const postsSlice = createSlice({
   },
 });
 
+// Exporting action creators
 export const {postAdded} = postsSlice.actions;
 
 export default postsSlice.reducer;
