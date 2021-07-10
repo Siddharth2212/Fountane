@@ -15,3 +15,9 @@ This is a react native project which has two features:
 
 1. Open android folder in android studio
 2. Build and run project
+
+### iOS
+
+1. Go to iOS folder & open Fountane.xcworkspace file in XCode
+2. Select Team
+3. Select the desired simulator and click the ▶️ button to run the App
