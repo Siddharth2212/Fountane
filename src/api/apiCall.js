@@ -22,3 +22,16 @@ export const getPosts = async () => {
     return err;
   }
 };
+
+// Filter  posts based on title from the API call
+export const filterPosts = async searchQuery => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/posts?searchQuery=${searchQuery}`,
+    );
+    return response.data;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};

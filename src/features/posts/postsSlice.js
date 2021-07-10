@@ -1,17 +1,27 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import {addPost, getPosts} from '../../api/apiCall';
+import {addPost, filterPosts, getPosts} from '../../api/apiCall';
 
 const initialState = {
   posts: [],
+  postsFromSearch: [],
   status: 'idle',
   error: null,
 };
 
-// Add redux thunk to retrieve lists of posts
+// Add redux thunk to retrieve/filter lists of posts
 export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
   const response = await getPosts();
   return response;
 });
+
+// Add redux thunk to retrieve/filter lists of posts
+export const filterFetchedPosts = createAsyncThunk(
+  'posts/fetchPosts',
+  async searchQuery => {
+    const response = await filterPosts(searchQuery);
+    return response;
+  },
+);
 
 // Add redux thunk to create a post
 export const addNewPost = createAsyncThunk(
@@ -42,6 +52,21 @@ const postsSlice = createSlice({
       state.status = 'failed';
       state.error = action.error.message;
     },
+    [filterFetchedPosts.pending]: (state, action) => {
+      // Called if filterFetchedPosts thunk dispatches "pending" action type
+      state.status = 'loading';
+    },
+    [filterFetchedPosts.fulfilled]: (state, action) => {
+      // Called if filterFetchedPosts thunk dispatches "fulfilled" action type
+      state.status = 'succeeded';
+      // Add any filtered posts to the array
+      state.postsFromSearch = action.payload;
+    },
+    [filterFetchedPosts.rejected]: (state, action) => {
+      // Called if filterFetchedPosts thunk dispatches "rejected" action type
+      state.status = 'failed';
+      state.error = action.error.message;
+    },
     [addNewPost.fulfilled]: (state, action) => {
       // Called if addNewPost thunk dispatches "fulfilled" action type
       state.posts.push(action.payload);
@@ -56,3 +81,6 @@ export default postsSlice.reducer;
 
 // Export selector function to components to extract posts data
 export const selectAllPosts = state => state.posts.posts;
+
+// Export selector function to components to filter posts data
+export const selectFilteredPosts = state => state.posts.postsFromSearch;

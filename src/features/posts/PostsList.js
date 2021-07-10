@@ -1,6 +1,11 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {selectAllPosts, fetchPosts} from './postsSlice';
+import {
+  selectAllPosts,
+  selectFilteredPosts,
+  fetchPosts,
+  filterFetchedPosts,
+} from './postsSlice';
 import {
   FlatList,
   View,
@@ -8,15 +13,22 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
-import {ListItem, Header} from 'react-native-elements';
+import {ListItem, Header, SearchBar} from 'react-native-elements';
+import {useDebounce} from 'use-debounce';
 
 export const PostsList = () => {
   const dispatch = useDispatch();
 
   // Read posts data from the Redux store
   const posts = useSelector(selectAllPosts);
+  const postsFromSearch = useSelector(selectFilteredPosts);
   const postStatus = useSelector(state => state.posts.status);
   const error = useSelector(state => state.posts.error);
+
+  const [keyword, setKeyword] = useState('');
+
+  // Debounce the search operation by 1.5 second
+  const [value] = useDebounce(keyword, 1500);
 
   // fetch posts data when component mounts
   useEffect(() => {
@@ -25,6 +37,19 @@ export const PostsList = () => {
       dispatch(fetchPosts());
     }
   }, [postStatus, dispatch]);
+
+  // fetch posts data when component mounts
+  useEffect(() => {
+    // alert("Aegaeg");
+    if (value.trim() !== '') {
+      dispatch(filterFetchedPosts(value));
+    }
+  }, [value, dispatch]);
+
+  // fetch all posts if search is cleared
+  const onClearSearch = () => {
+    dispatch(fetchPosts());
+  };
 
   const keyExtractor = (item, index) => index.toString();
 
@@ -50,12 +75,23 @@ export const PostsList = () => {
       </View>
     );
   } else if (postStatus === 'succeeded') {
+    // If posts from search exist show them otherwise show all posts
+    const postsToShow = postsFromSearch.length > 0 ? postsFromSearch : posts;
     content = (
-      <FlatList
-        keyExtractor={keyExtractor}
-        data={posts}
-        renderItem={renderItem}
-      />
+      <>
+        <SearchBar
+          onClear={onClearSearch}
+          lightTheme
+          placeholder="Type Here..."
+          onChangeText={text => setKeyword(text)}
+          value={keyword}
+        />
+        <FlatList
+          keyExtractor={keyExtractor}
+          data={postsToShow}
+          renderItem={renderItem}
+        />
+      </>
     );
   } else if (postStatus === 'failed') {
     content = <Text>{error}</Text>;

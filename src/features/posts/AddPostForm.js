@@ -10,20 +10,19 @@ import {
   Alert,
 } from 'react-native';
 import {Button, Header} from 'react-native-elements';
-import {addNewPost} from './postsSlice';
+import {addNewPost, fetchPosts} from './postsSlice';
 
 const AddPostForm = props => {
   const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [body, setBody] = useState('');
   const [addRequestStatus, setAddRequestStatus] = useState('idle');
 
   const dispatch = useDispatch();
 
   const onTitleChanged = value => setTitle(value);
-  const onContentChanged = value => setContent(value);
+  const onContentChanged = value => setBody(value);
 
-  const canSave =
-    [title, content].every(Boolean) && addRequestStatus === 'idle';
+  const canSave = [title, body].every(Boolean) && addRequestStatus === 'idle';
 
   const onSavePostClicked = async () => {
     if (canSave) {
@@ -31,18 +30,16 @@ const AddPostForm = props => {
         setAddRequestStatus('pending');
 
         // Dispatch addNewPost thunk
-        const resultAction = await dispatch(
-          addNewPost({title, body: content, user: 1}),
-        );
+        const resultAction = await dispatch(addNewPost({title, body}));
         unwrapResult(resultAction);
         setTitle('');
-        setContent('');
+        setBody('');
       } catch (err) {
         console.error('Failed to save the post: ', err);
       } finally {
         Alert.alert('Success', 'Post added successfully!');
-        //Navigate to All Posts tab upon post creation
-        props.navigation.navigate('All Posts');
+        //Refresh posts after the post is added
+        dispatch(fetchPosts());
         setAddRequestStatus('idle');
       }
     }
@@ -73,7 +70,7 @@ const AddPostForm = props => {
           placeholder="Title"
         />
         <TextInput
-          value={content}
+          value={body}
           onChangeText={onContentChanged}
           placeholder="Content"
         />
