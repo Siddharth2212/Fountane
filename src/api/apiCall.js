@@ -1,10 +1,10 @@
 import axios from 'axios';
-import {BASE_URL} from './apiConstant';
+import Config from 'react-native-config';
 
 // Create a new post by hitting the API call
 export const addPost = async data => {
   try {
-    const resp = await axios.post(`${BASE_URL}/posts`, data);
+    const resp = await axios.post(`${Config.API_HOST}/posts`, data);
     return resp.data;
   } catch (err) {
     console.error(err);
@@ -15,7 +15,7 @@ export const addPost = async data => {
 // Get all posts from the API call
 export const getPosts = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}/posts`);
+    const response = await axios.get(`${Config.API_HOST}/posts`);
     return response.data;
   } catch (err) {
     console.error(err);
@@ -27,7 +27,7 @@ export const getPosts = async () => {
 export const filterPosts = async searchQuery => {
   try {
     const response = await axios.get(
-      `${BASE_URL}/posts?searchQuery=${searchQuery}`,
+      `${Config.API_HOST}/posts?searchQuery=${searchQuery}`,
     );
     return response.data;
   } catch (err) {

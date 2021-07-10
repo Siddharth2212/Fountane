@@ -1,15 +1,8 @@
 import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {unwrapResult} from '@reduxjs/toolkit';
-import {
-  View,
-  Text,
-  TextInput,
-  ActivityIndicator,
-  StyleSheet,
-  Alert,
-} from 'react-native';
-import {Button, Header} from 'react-native-elements';
+import {View, Text, ActivityIndicator, StyleSheet, Alert} from 'react-native';
+import {Button, Header, Input} from 'react-native-elements';
 import {addNewPost, fetchPosts} from './postsSlice';
 
 const AddPostForm = props => {
@@ -64,12 +57,16 @@ const AddPostForm = props => {
     <View>
       <Header leftComponent={{text: 'Add Post', style: {color: '#fff'}}} />
       <View>
-        <TextInput
+        <Input
+          multiline
+          numberOfLines={2}
           value={title}
           onChangeText={onTitleChanged}
           placeholder="Title"
         />
-        <TextInput
+        <Input
+          multiline
+          numberOfLines={3}
           value={body}
           onChangeText={onContentChanged}
           placeholder="Content"

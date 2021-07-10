@@ -1,5 +1,5 @@
 import {Provider} from 'react-redux';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -7,10 +7,15 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import {store} from './src/app/store';
 import PostsList from './src/features/posts/PostsList';
 import AddPostForm from './src/features/posts/AddPostForm';
+import SplashScreen from 'react-native-splash-screen';
 
 const Tab = createBottomTabNavigator();
 
 const App = () => {
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
+
   return (
     <NavigationContainer>
       <Provider store={store}>

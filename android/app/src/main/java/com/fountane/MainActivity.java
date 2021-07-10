@@ -2,6 +2,11 @@ package com.fountane;
 
 import com.facebook.react.ReactActivity;
 
+import android.app.Activity;
+import android.os.Bundle;
+import org.devio.rn.splashscreen.SplashScreen; // here 
+
+
 public class MainActivity extends ReactActivity {
 
   /**
@@ -12,4 +17,10 @@ public class MainActivity extends ReactActivity {
   protected String getMainComponentName() {
     return "Fountane";
   }
+
+  @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        SplashScreen.show(this);  // here
+        super.onCreate(savedInstanceState);
+    }
 }
